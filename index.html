@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashinobi - Ninja Action Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            border-radius: 2px;
+        }
+
+        .game-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 107, 107, 0.5); }
+            to { text-shadow: 0 0 30px rgba(78, 205, 196, 0.8); }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .flag-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            backdrop-filter: blur(10px);
+        }
+
+        .flag-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .flag-btn.active {
+            background: rgba(78, 205, 196, 0.3);
+            border-color: #4ecdc4;
+        }
+
+        .flag {
+            font-size: 1.2rem;
+        }
+
+        .beta-signup {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .beta-signup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .beta-signup:hover::before {
+            left: 100%;
+        }
+
+        .beta-signup h2 {
+            font-size: 2.5rem;
+            color: #4ecdc4;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        }
+
+        .beta-signup p {
+            color: #d0d0d0;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .google-form-btn {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 40px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            min-width: 280px;
+        }
+
+        .google-form-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-icon {
+            font-size: 2rem;
+        }
+
+        .btn-text {
+            font-size: 1.3rem;
+        }
+
+        .btn-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: normal;
+        }
+
+        .form-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .form-info p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(78, 205, 196, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4ecdc4;
+        }
+
+        .feature-description {
+            color: #d0d0d0;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .game-info {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ecdc4;
+            display: block;
+        }
+
+        .info-label {
+            color: #b0b0b0;
+            margin-top: 5px;
+        }
+
+        .contact-info {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            color: #4ecdc4;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .contact-info p {
+            color: #d0d0d0;
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .contact-info strong {
+            color: #ff6b6b;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ninja-emoji {
+            font-size: 1.5rem;
+            margin: 0 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        a {
+            color: #4ecdc4;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #ff6b6b;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+
+            .beta-signup {
+                padding: 30px 20px;
+            }
+
+            .beta-signup h2 {
+                font-size: 2rem;
+            }
+
+            .google-form-btn {
+                min-width: 250px;
+                padding: 15px 30px;
+            }
+
+            .language-toggle {
+                top: 15px;
+                right: 15px;
+                gap: 8px;
+            }
+
+            .flag-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle">
+        <button class="flag-btn active" onclick="switchLanguage('en')">
+            <span class="flag">🇺🇸</span>
+            <span>English</span>
+        </button>
+        <button class="flag-btn" onclick="switchLanguage('id')">
+            <span class="flag">🇮🇩</span>
+            <span>Indonesia</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="game-title">FLASHINOBI</h1>
+            <p class="subtitle">Ninja Action Game</p>
+            <p>🎮 Unity Game Engine • 📱 Android Only</p>
+        </div>
+
+        <div class="beta-signup" id="beta-signup-en">
+            <h2>🎮 Join Closed Beta Testing!</h2>
+            <p>Be among the first to experience the ultimate ninja adventure on Android! Flashinobi is a thrilling 2D action game featuring epic battles, special attacks, and stunning visuals.</p>
+            
+            <a href="https://forms.gle/cG6TYeRFsy7Q4n7g8" target="_blank" class="google-form-btn">
+                <span class="btn-icon">📝</span>
+                <span class="btn-text">Join Beta Testing</span>
+                <span class="btn-subtitle">Fill out the form</span>
+            </a>
+            
+            <div class="form-info">
+                <p>✨ Quick and easy registration</p>
+                <p>🔒 Your information is safe and secure</p>
+                <p>📧 We'll notify you when beta starts</p>
+            </div>
+        </div>
+
+        <div class="beta-signup" id="beta-signup-id" style="display: none;">
+            <h2>🎮 Bergabunglah dengan Closed Beta Testing!</h2>
+            <p>Jadilah yang pertama merasakan petualangan ninja terbaik di Android! Flashinobi adalah game aksi 2D yang menegangkan dengan pertarungan epik, serangan khusus, dan visual yang menakjubkan.</p>
+            
+            <a href="https://forms.gle/cG6TYeRFsy7Q4n7g8" target="_blank" class="google-form-btn">
+                <span class="btn-icon">📝</span>
+                <span class="btn-text">Bergabung Beta Testing</span>
+                <span class="btn-subtitle">Isi formulir</span>
+            </a>
+            
+            <div class="form-info">
+                <p>✨ Pendaftaran cepat dan mudah</p>
+                <p>🔒 Informasi Anda aman dan terlindungi</p>
+                <p>📧 Kami akan memberitahu saat beta dimulai</p>
+            </div>
+        </div>
+
+        <div class="game-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-number">📱</span>
+                    <div class="info-label">Android Only</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-number">🎮</span>
+                    <div class="info-label">Unity Engine</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-number">🥷</span>
+                    <div class="info-label">Ninja Action</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-number">🚀</span>
+                    <div class="info-label">Beta Testing</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="contact-info">
+            <h3>📧 Beta Testing Information</h3>
+            <p><strong>📧 Email:</strong> kebalikstudio@gmail.com</p>
+            <p><strong>👨‍💻 Developer:</strong> Kebalik Studio</p>
+            <p><strong>🎮 Game:</strong> Flashinobi v1.0.0</p>
+            <p><strong>📱 Platform:</strong> Android Only</p>
+            <p><strong>⏰ Beta Testing:</strong> Starting Soon!</p>
+        </div>
+
+        <div class="footer">
+            <p>
+                <span class="ninja-emoji">🥷</span>
+                Flashinobi - Ninja Action Game v1.0.0
+                <span class="ninja-emoji">⚡</span>
+            </p>
+            <p style="margin-top: 10px; color: #666;">
+                Built with Unity Engine for an extraordinary gaming experience
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function switchLanguage(lang) {
+            const enContent = document.getElementById('beta-signup-en');
+            const idContent = document.getElementById('beta-signup-id');
+            const enBtn = document.querySelector('.flag-btn:first-child');
+            const idBtn = document.querySelector('.flag-btn:last-child');
+
+            if (lang === 'en') {
+                enContent.style.display = 'block';
+                idContent.style.display = 'none';
+                enBtn.classList.add('active');
+                idBtn.classList.remove('active');
+                document.documentElement.lang = 'en';
+            } else if (lang === 'id') {
+                enContent.style.display = 'none';
+                idContent.style.display = 'block';
+                enBtn.classList.remove('active');
+                idBtn.classList.add('active');
+                document.documentElement.lang = 'id';
+            }
+        }
+
+        // Initialize with English
+        document.addEventListener('DOMContentLoaded', function() {
+            switchLanguage('en');
+        });
+    </script>
+</body>
+</html>
